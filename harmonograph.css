@@ -1,0 +1,63 @@
+body {
+	margin: 0px;
+	font-family: sans-serif;
+	background-color: #ffe;
+}
+
+td.main {
+	vertical-align: top;
+	padding: 20px;
+}
+
+h1 {
+	margin: 0em 0em;
+	padding: 0.2em;
+	background-color: #ffc;
+}
+
+.right {
+	float: right;
+}
+
+p {
+	margin-right: 20px;
+}
+
+canvas {
+	background-color: #fff;
+	border: 2px solid #ffa;
+	margin-bottom: 20px;
+}
+
+table.input td {
+	vertical-align: bottom;
+}
+
+input {
+	width: 5em;
+	text-align: right;
+	font-family: monospace;
+}
+
+input.error {
+	background-color: #fdd;
+}
+
+td.desc {
+	font-size: 70%;
+}
+
+button {
+	height: 2em;
+}
+
+button#startstop {
+	width: 6em;
+	height: 3em;
+	font-size: 2em;
+}
+
+button#reset {
+	width: 6em;
+	height: 3em;
+}
