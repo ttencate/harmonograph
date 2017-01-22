@@ -2,30 +2,53 @@
 <html>
 
 <head>
-<title>Harmonograph in JavaScript</title>
-<script type="text/javascript" src="harmonograph.js"></script>
-<link rel="stylesheet" type="text/css" href="harmonograph.css"/>
+	<title>Harmonograph in JavaScript</title>
+	<link rel="stylesheet" type="text/css" href="harmonograph.css"/>
+	<script type="text/javascript" src="harmonograph.js"></script>
 </head>
 
 <body onload="init()">
-	<p class="right"><a id="permalink" href="#">Link to this creation</a></p>
+	<p class="right">
+		<a href="https://github.com/ttencate/harmonograph">Source code</a> |
+		<a id="permalink" href="#">Link to this creation</a>
+	</p>
 	<h1>Harmonograph in JavaScript</h1>
 	<table id="main">
 		<tr>
 			<td class="main">
-				<canvas id="output" width="640" height="640">
+				<canvas id="output" class="output main" width="640" height="640">
 					This harmonograph simulator uses the HTML5 canvas element. You need a recent browser to view it, for example, <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a>, <a href="http://www.google.com/chrome">Google Chrome</a> or <a href="http://www.opera.com/">Opera</a>.
 				</canvas>
-				<form id="control">
-					<div class="right">
-						<button id="reset" onclick="stop(); return initial()">Reset</button>
-						<button id="startstop" onclick="return start()">Start</button>
-					</div>
-					Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
-				</form>
+				<div class="right">
+					<form id="control">
+						<button type="button" id="reset" onclick="stop(); return initial()">Reset</button>
+						<button type="button" id="startstop" onclick="return start()">Start</button>
+						<br><br>
+						Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
+					</form>
+				</div>
+				High resolution output (4096&times;4096 pixels):
+				<table>
+					<tr>
+						<td>
+							<canvas id="png" class="output thumbnail" width="4096" height="4096"></canvas>
+						</td>
+						<td>
+							<svg xmlns="http://www.w3.org/2000/svg" id="svg" class="output thumbnail" width="4096" height="4096">
+								<g id="svgTransform">
+									<path id="svgPath" stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+								</g>
+							</svg>
+						</td>
+					</tr>
+					<tr>
+						<th>PNG</th>
+						<th>SVG</th>
+					</tr>
+				</table>
 			</td>
 			<td class="main">
-				<canvas id="overview" width="320" height="480">
+				<canvas id="overview" class="output overview" width="320" height="480">
 				</canvas>
 				<form id="input">
 					<table class="input">

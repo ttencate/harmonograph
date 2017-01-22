@@ -8,6 +8,8 @@ var t = 0.0, dt = 0.01;
 var alpha, beta, gamma;
 
 var output, outc;
+var png, pngc;
+var svg, svgTransform, svgPath;
 var overview, overc;
 var startStop, permalink;
 
@@ -18,6 +20,11 @@ function init() {
 	permalink = document.getElementById('permalink');
 	output = document.getElementById('output');
 	outc = output.getContext('2d');
+	png = document.getElementById('png');
+	pngc = png.getContext('2d');
+	svg = document.getElementById('svg');
+	svgTransform = document.getElementById('svgTransform');
+	svgPath = document.getElementById('svgPath');
 	overview = document.getElementById('overview');
 	overc = overview.getContext('2d');
 
@@ -27,30 +34,52 @@ function init() {
 	initial();
 }
 
+function initialCanvas(canvas, context, drawCircle) {
+	context.setTransform(1, 0, 0, 1, 0, 0);
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	context.strokeStyle = '#000';
+	context.lineCap = 'round';
+	context.lineJoin = 'round';
+	
+	if (r) {
+		var scale = Math.min(canvas.width * 0.9 / 2.0 / r, canvas.height * 0.9 / 2.0 / r);
+		context.setTransform(scale, 0, 0, scale, canvas.width / 2.0, canvas.height / 2.0);
+		
+		if (drawCircle) {
+			context.save();
+			context.strokeStyle = '#eee';
+			context.globalAlpha = 1.0;
+			context.beginPath();
+			context.arc(0, 0, r, 0, 2.0 * Math.PI, false);
+			context.stroke();
+			context.restore();
+		}
+	}
+}
+
+function initialSvg(svg, transform, path) {
+	if (r) {
+		var w = svg.width.baseVal.value;
+		var h = svg.height.baseVal.value;
+		var scale = Math.min(w * 0.9 / 2.0 / r, h * 0.9 / 2.0 / r);
+		var m = svg.createSVGMatrix().translate(w / 2.0, h / 2.0).scale(scale);
+		transform.transform.baseVal.initialize(svg.createSVGTransformFromMatrix(m));
+	}
+
+	path.setAttribute('d', 'M ' + x + ' ' + y);
+}
+
 function initial() {
 	t = 0.0;
 	updateXY();
-	
-	outc.setTransform(1, 0, 0, 1, 0, 0);
-	outc.clearRect(0, 0, output.width, output.height);
-	outc.strokeStyle = '#000';
-	outc.globalAlpha = 0.2;
-	
-	if (r) {
-		var scale = Math.min(output.width * 0.9 / 2.0 / r, output.height * 0.9 / 2.0 / r);
-		outc.setTransform(scale, 0, 0, scale, output.width / 2.0, output.height / 2.0);
-		
-		outc.save();
-		outc.strokeStyle = '#eee';
-		outc.globalAlpha = 1.0;
-		outc.beginPath();
-		outc.arc(0, 0, r, 0, 2.0 * Math.PI, false);
-		outc.stroke();
-		outc.restore();
-	}
+
+	initialCanvas(output, outc, true);
+	outc.lineWidth = 0.2;
+	initialCanvas(png, pngc, false);
+	initialSvg(svg, svgTransform, svgPath);
 	
 	drawOverview(true);
-	
+
 	return false;
 }
 
@@ -77,15 +106,35 @@ function stop() {
 	return false;
 }
 
-function step() {
+function drawSegment(x0, y0, x1, y1) {
 	outc.beginPath();
-	outc.moveTo(x, y);
+	outc.moveTo(x0, y0);
+	outc.lineTo(x1, y1);
+	outc.stroke();
+
+	pngc.beginPath();
+	pngc.moveTo(x0, y0);
+	pngc.lineTo(x1, y1);
+	pngc.stroke();
+
+	var pathData = svgPath.getAttribute('d');
+	if (pathData.indexOf('L') < 0) {
+		pathData += ' L';
+	}
+	pathData += ' ' + x1 + ' ' + y1;
+	svgPath.setAttribute('d', pathData);
+}
+
+function step() {
+	var prevX = x;
+	var prevY = y;
 	for (var i = 0; i < s; ++i) {
 		t += dt;
 		updateXY();
-		outc.lineTo(x, y);
+		drawSegment(prevX, prevY, x, y);
+		prevX = x;
+		prevY = y;
 	}
-	outc.stroke();
 	
 	drawOverview(false);
 }

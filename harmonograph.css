@@ -4,6 +4,10 @@ body {
 	background-color: #ffe;
 }
 
+th {
+	font-weight: normal;
+}
+
 td.main {
 	vertical-align: top;
 	padding: 20px;
@@ -23,10 +27,25 @@ p {
 	margin-right: 20px;
 }
 
-canvas {
+.output {
 	background-color: #fff;
 	border: 2px solid #ffa;
+}
+
+.output.main,
+.output.overview {
+	display: block;
 	margin-bottom: 20px;
+}
+
+.output.thumbnail {
+	width: 64px;
+	height: 64px;
+	vertical-align: middle;
+}
+
+table {
+	border-spacing: 0;
 }
 
 table.input td {
