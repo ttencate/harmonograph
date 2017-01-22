@@ -16,7 +16,8 @@ HTML5 canvas element. The pendulum motion is approximated by a sine function,
 and friction by an exponential, but apart from that it should be pretty
 physically accurate.
 
-Without further ado, I present to you this Harmonograph in JavaScript. Usage
+Without further ado, I present to you this
+[Harmonograph in JavaScript](https://ttencate.github.io/harmonograph/). Usage
 should be self-evident. Although some input validation is done, you will be
 able to break it with strange values.
 
