@@ -21,6 +21,8 @@ function CanvasRenderer(canvas, lineWidth, lineOpacity, drawCircle) {
 	this.lineWidth = lineWidth;
 	this.lineOpacity = lineOpacity;
 	this.drawCircle = drawCircle;
+
+	this.clear();
 }
 
 CanvasRenderer.prototype.clear = function() {
@@ -74,6 +76,8 @@ CanvasRenderer.prototype.save = function() {
 function SvgRenderer(svg, lineWidth, lineOpacity) {
 	this.svg = svg;
 	this.path = null;
+
+	this.clear();
 }
 
 SvgRenderer.prototype.clear = function() {
@@ -108,7 +112,7 @@ SvgRenderer.prototype.draw = function(points) {
 };
 
 SvgRenderer.prototype.save = function() {
-	var blob = new Blob([svg.outerHTML], {type: 'application/svg+xml'});
+	var blob = new Blob([this.svg.outerHTML], {type: 'application/svg+xml'});
 	saveAs(blob, 'harmonograph.svg');
 }
 
@@ -343,6 +347,27 @@ function drawOverview(variables) {
 		}
 	}
 	overc.restore();
+}
+
+function savePng() {
+	var png = document.createElement('canvas');
+	png.width = 4096;
+	png.height = 4096;
+	var renderer = new CanvasRenderer(png, 1, 1, false);
+	renderer.draw(points);
+	renderer.save();
+}
+
+function saveSvg() {
+	var ns = 'http://www.w3.org/2000/svg';
+	var svg = document.createElementNS(ns, 'svg');
+	svg.setAttribute('xmlns', ns);
+	svg.setAttribute('width', 640);
+	svg.setAttribute('height', 640);
+	svg.setAttribute('version', '1.1');
+	var renderer = new SvgRenderer(svg, 1, 1);
+	renderer.draw(points);
+	renderer.save();
 }
 
 function fromPermalink() {
