@@ -69,42 +69,116 @@ CanvasRenderer.prototype.save = function() {
 	}, 'image/png');
 };
 
-function SvgRenderer(svg, lineWidth, lineOpacity) {
+function SvgRenderer(svg, drawSegments, drawBezier) {
 	this.svg = svg;
 	this.path = null;
+	svg.innerHTML = '';
+
+	this.segments = '';
+	if (drawSegments) {
+		svg.innerHTML += '<path id="segments" stroke="#f00" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
+	this.segments = this.svg.querySelector('#segments');
+	}
+
+	this.bezier = '';
+	if (drawBezier) {
+		svg.innerHTML += '<path id="bezier" stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
+		this.bezier = this.svg.querySelector('#bezier');
+	}
 
 	this.clear();
 }
 
 SvgRenderer.prototype.clear = function() {
 	var svg = this.svg;
-
-	svg.innerHTML = '<path stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
-	this.path = this.svg.querySelector('path');
+	if (this.segments) {
+		this.segments.setAttribute('d', '');
+	}
+	if (this.bezier) {
+		this.bezier.setAttribute('d', '');
+	}
 
 	if (r) {
 		var w = svg.width.baseVal.value;
 		var h = svg.height.baseVal.value;
 		var scale = Math.min(w * 0.9 / 2.0 / r, h * 0.9 / 2.0 / r);
 		var m = svg.createSVGMatrix().translate(w / 2.0, h / 2.0).scale(scale);
-		this.path.transform.baseVal.initialize(svg.createSVGTransformFromMatrix(m));
+		var transform = svg.createSVGTransformFromMatrix(m);
+		if (this.segments) {
+			this.segments.transform.baseVal.initialize(transform);
+		}
+		if (this.bezier) {
+			this.bezier.transform.baseVal.initialize(transform);
+		}
 	}
 };
 
 SvgRenderer.prototype.draw = function(xs, ys) {
-	var data = [this.path.getAttribute('d'), 'M'];
+	if (this.segments) {
+		this.drawSegments(this.segments, xs, ys);
+	}
+	if (this.bezier) {
+		this.drawBezier(this.bezier, xs, ys);
+	}
+};
+
+function round(x) {
+	return Math.round(x * 1000) / 1000;
+}
+
+SvgRenderer.prototype.drawSegments = function(path, xs, ys) {
+	var data = [path.getAttribute('d'), 'M'];
 	var i = 0;
-	data.push(xs[0]);
-	data.push(ys[0]);
+	data.push(round(xs[0]));
+	data.push(round(ys[0]));
 	var n = xs.length;
 	if (n > 1) {
 		data.push('L');
 	}
 	for (var i = 1; i < n; i++) {
-		data.push(xs[i]);
-		data.push(ys[i]);
+		data.push(round(xs[i]));
+		data.push(round(ys[i]));
 	}
-	this.path.setAttribute('d', data.join(' '));
+	path.setAttribute('d', data.join(' '));
+};
+
+SvgRenderer.prototype.drawBezier = function(path, xs, ys) {
+	var n = xs.length;
+	var step = Math.min(32, n - 1);
+	var factor = 0.5 * step / 3;
+	var rxs = [];
+	var rys = [];
+	var cxs = [];
+	var cys = [];
+	for (var i = 0; i < n; i += step) {
+		var prev = Math.max(0, i - 1);
+		var next = Math.min(n - 1, i + 1);
+		rxs.push(xs[i]);
+		rys.push(ys[i]);
+		cxs.push(factor * (xs[next] - xs[prev]));
+		cys.push(factor * (ys[next] - ys[prev]));
+	}
+	var rn = rxs.length;
+
+	var data = [
+		path.getAttribute('d'),
+		'M',
+		round(rxs[0]), round(rys[0]),
+		'C',
+		round(rxs[0] + cxs[0]), round(rys[0] + cys[0]) + ',',
+		round(rxs[1] - cxs[1]), round(rys[1] - cys[1]) + ',',
+		round(rxs[1]), round(rys[1])
+	];
+	if (rn > 2) {
+		data.push('S');
+		for (var i = 2; i < rn; i++) {
+			data.push(round(rxs[i] - cxs[i]));
+			data.push(round(rys[i] - cys[i]) + ',');
+			data.push(round(rxs[i]));
+			data.push(round(rys[i]));
+		}
+	}
+	path.setAttribute('d', data.join(' '));
 };
 
 SvgRenderer.prototype.save = function() {
@@ -363,7 +437,7 @@ function saveSvg() {
 	svg.setAttribute('width', 640);
 	svg.setAttribute('height', 640);
 	svg.setAttribute('version', '1.1');
-	var renderer = new SvgRenderer(svg, 1, 1);
+	var renderer = new SvgRenderer(svg, false, true);
 	renderer.draw(xs, ys);
 	renderer.save();
 }
