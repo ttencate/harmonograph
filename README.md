@@ -21,5 +21,5 @@ Without further ado, I present to you this
 should be self-evident. Although some input validation is done, you will be
 able to break it with strange values.
 
-With the link at the top, you can save and bookmark your creations or send them
-to your friends. Enjoy!
+You can save and bookmark your creations in the form as links. You can also
+export images in PNG and SVG format. Enjoy!
