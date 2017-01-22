@@ -23,90 +23,85 @@
 					This harmonograph simulator uses the HTML5 canvas element. You need a recent browser to view it, for example, <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a>, <a href="http://www.google.com/chrome">Google Chrome</a> or <a href="http://www.opera.com/">Opera</a>.
 				</canvas>
 				<div class="right">
-					<form id="control">
-						<button type="button" id="reset" onclick="event.preventDefault(); stop(); clear();">Reset</button>
-						<button type="button" id="startstop" onclick="event.preventDefault(); start();">Start</button>
-						<br><br>
-						Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
-					</form>
+					<button type="button" id="reset" onclick="event.preventDefault(); stop(); clear();">Reset</button>
+					<button type="button" id="startstop" onclick="event.preventDefault(); start();">Start</button>
 				</div>
+				Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
 			</td>
 			<td class="main">
 				<canvas id="overview" class="output overview" width="320" height="480">
 				</canvas>
-				<form id="input">
-					<table class="input">
-						<tr>
-							<td class="desc">Distance between pendulums</td>
-							<td class="var"><em>d</em> =</td>
-							<td class="input"><input type="number" id="d" value="900" onchange="inputChange()"/> mm</td>
-						</tr>
-						<tr>
-							<td class="desc">Position of paper centre</td>
-							<td class="var"><em>c</em> =</td>
-							<td class="input"><input type="number" id="c" value="800" onchange="inputChange()"/> mm</td>
-						</tr>
-						<tr>
-							<td class="desc">Length of pen arm</td>
-							<td class="var"><em>p</em> =</td>
-							<td class="input"><input type="number" id="p" value="900" onchange="inputChange()"/> mm</td>
-						</tr>
-						<tr>
-							<td class="desc">Position of pen arm</td>
-							<td class="var"><em>q</em> =</td>
-							<td class="input"><input type="number" id="q" value="700" onchange="inputChange()"/> mm</td>
-						</tr>
-						<tr>
-							<td class="desc">Radius of paper</td>
-							<td class="var"><em>r</em> =</td>
-							<td class="input"><input type="number" id="r" min="0" value="300" onchange="inputChange()"/> mm</td>
-						<tr>
-							<td class="desc">Amplitude of left pendulum</td>
-							<td class="var"><em>A</em> = </td>
-							<td class="input"><input type="number" id="A" min="0" value="10" onchange="inputChange()"/>&deg;</td>
-						</tr>
-						<tr>
-							<td class="desc">Amplitude of right pendulum</td>
-							<td class="var"><em>B</em> = </td>
-							<td class="input"><input type="number" id="B" min="0" value="10" onchange="inputChange()"/>&deg;</td>
-						</tr>
-						<tr>
-							<td class="desc">Phase of left pendulum</td>
-							<td class="var"><em>u</em> = </td>
-							<td class="input"><input type="number" id="u" min="0" max="1" value="0" onchange="inputChange()"/> (0&hellip;1)</td>
-						</tr>
-						<tr>
-							<td class="desc">Phase of right pendulum</td>
-							<td class="var"><em>v</em> = </td>
-							<td class="input"><input type="number" id="v" min="0" max="1" value="0" onchange="inputChange()"/> (0&hellip;1)</td>
-						</tr>
-						<tr>
-							<td class="desc">Damping of left pendulum</td>
-							<td class="var"><em>R</em> = </td>
-							<td class="input"><input type="number" id="R" min="0" value="0.001" onchange="inputChange()"/> (0&hellip;)</td>
-						</tr>
-						<tr>
-							<td class="desc">Damping of right pendulum</td>
-							<td class="var"><em>S</em> = </td>
-							<td class="input"><input type="number" id="S" min="0" value="0.001" onchange="inputChange()"/> (0&hellip;)</td>
-						</tr>
-						<tr>
-							<td class="desc">Frequency of left pendulum</td>
-							<td class="var"><em>f</em> = </td>
-							<td class="input"><input type="number" id="f" min="0" value="0.3" onchange="inputChange()"/> Hz</td>
-						</tr>
-						<tr>
-							<td class="desc">Frequency of right pendulum</td>
-							<td class="var"><em>g</em> = </td>
-							<td class="input"><input type="number" id="g" min="0" value="0.302" onchange="inputChange()"/> Hz</td>
-						</tr>
-						<tr>
-							<td class="desc">Frequency of paper rotation</td>
-							<td class="var"><em>h</em> = </td>
-							<td class="input"><input type="number" id="h" value="0.0008" onchange="inputChange()"/> Hz</td>
-						</tr>
-					</table>
-				</form>
+				<table id="input" class="input">
+					<tr>
+						<td class="desc">Distance between pendulums</td>
+						<td class="var"><em>d</em> =</td>
+						<td class="input"><input type="number" id="d" value="900" onchange="inputChange()"/> mm</td>
+					</tr>
+					<tr>
+						<td class="desc">Position of paper centre</td>
+						<td class="var"><em>c</em> =</td>
+						<td class="input"><input type="number" id="c" value="800" onchange="inputChange()"/> mm</td>
+					</tr>
+					<tr>
+						<td class="desc">Length of pen arm</td>
+						<td class="var"><em>p</em> =</td>
+						<td class="input"><input type="number" id="p" value="900" onchange="inputChange()"/> mm</td>
+					</tr>
+					<tr>
+						<td class="desc">Position of pen arm</td>
+						<td class="var"><em>q</em> =</td>
+						<td class="input"><input type="number" id="q" value="700" onchange="inputChange()"/> mm</td>
+					</tr>
+					<tr>
+						<td class="desc">Radius of paper</td>
+						<td class="var"><em>r</em> =</td>
+						<td class="input"><input type="number" id="r" min="0" value="300" onchange="inputChange()"/> mm</td>
+					<tr>
+						<td class="desc">Amplitude of left pendulum</td>
+						<td class="var"><em>A</em> = </td>
+						<td class="input"><input type="number" id="A" min="0" value="10" onchange="inputChange()"/>&deg;</td>
+					</tr>
+					<tr>
+						<td class="desc">Amplitude of right pendulum</td>
+						<td class="var"><em>B</em> = </td>
+						<td class="input"><input type="number" id="B" min="0" value="10" onchange="inputChange()"/>&deg;</td>
+					</tr>
+					<tr>
+						<td class="desc">Phase of left pendulum</td>
+						<td class="var"><em>u</em> = </td>
+						<td class="input"><input type="number" id="u" min="0" max="1" value="0" onchange="inputChange()"/> (0&hellip;1)</td>
+					</tr>
+					<tr>
+						<td class="desc">Phase of right pendulum</td>
+						<td class="var"><em>v</em> = </td>
+						<td class="input"><input type="number" id="v" min="0" max="1" value="0" onchange="inputChange()"/> (0&hellip;1)</td>
+					</tr>
+					<tr>
+						<td class="desc">Damping of left pendulum</td>
+						<td class="var"><em>R</em> = </td>
+						<td class="input"><input type="number" id="R" min="0" value="0.001" onchange="inputChange()"/> (0&hellip;)</td>
+					</tr>
+					<tr>
+						<td class="desc">Damping of right pendulum</td>
+						<td class="var"><em>S</em> = </td>
+						<td class="input"><input type="number" id="S" min="0" value="0.001" onchange="inputChange()"/> (0&hellip;)</td>
+					</tr>
+					<tr>
+						<td class="desc">Frequency of left pendulum</td>
+						<td class="var"><em>f</em> = </td>
+						<td class="input"><input type="number" id="f" min="0" value="0.3" onchange="inputChange()"/> Hz</td>
+					</tr>
+					<tr>
+						<td class="desc">Frequency of right pendulum</td>
+						<td class="var"><em>g</em> = </td>
+						<td class="input"><input type="number" id="g" min="0" value="0.302" onchange="inputChange()"/> Hz</td>
+					</tr>
+					<tr>
+						<td class="desc">Frequency of paper rotation</td>
+						<td class="var"><em>h</em> = </td>
+						<td class="input"><input type="number" id="h" value="0.0008" onchange="inputChange()"/> Hz</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 	</table>
