@@ -1,6 +1,6 @@
 'use strict';
 
-var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s, w, res;
+var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s, w;
 
 var t = 0.0, dt = 0.01;
 var x, y;
@@ -261,7 +261,6 @@ function enableInput(enabled) {
 		var input = inputs[i];
 		input.disabled = !enabled;
 	}
-	document.getElementById('res').disabled = !enabled;
 }
 
 function updateXY() {
@@ -310,10 +309,6 @@ function readInput() {
 	h = read('h');
 	s = read('s');
 	w = read('w');
-
-	res = read('res');
-	output.canvas.width = res;
-	output.canvas.height = res;
 }
 
 function drawOverview(variables) {
@@ -425,6 +420,7 @@ function drawOverview(variables) {
 }
 
 function savePng() {
+	var res = read('res');
 	var png = document.createElement('canvas');
 	png.width = res;
 	png.height = res;
@@ -434,6 +430,7 @@ function savePng() {
 }
 
 function saveSvg() {
+	var res = read('res');
 	var ns = 'http://www.w3.org/2000/svg';
 	var svg = document.createElementNS(ns, 'svg');
 	svg.setAttribute('xmlns', ns);

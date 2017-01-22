@@ -10,25 +10,11 @@
 
 <body onload="init()">
 	<p class="right">
-		<a href="https://github.com/ttencate/harmonograph">Source code</a> |
-		<a onclick="event.preventDefault(); savePng();" href="#">Save PNG</a> |
-		<a onclick="event.preventDefault(); saveSvg();" href="#">Save SVG</a> |
-		<a id="permalink" href="#">Link to this creation</a>
+		<a href="https://github.com/ttencate/harmonograph">Source code</a>
 	</p>
 	<h1>Harmonograph in JavaScript</h1>
 	<table id="main">
 		<tr>
-			<td class="main">
-				<canvas id="output" class="output main" width="640" height="640">
-					This harmonograph simulator uses the HTML5 canvas element. You need a recent browser to view it, for example, <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a>, <a href="http://www.google.com/chrome">Google Chrome</a> or <a href="http://www.opera.com/">Opera</a>.
-				</canvas>
-				<div class="right">
-					<button type="button" id="reset" onclick="event.preventDefault(); stop(); clear();">Reset</button>
-					<button type="button" id="startstop" onclick="event.preventDefault(); start();">Start</button><br><br>
-					Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
-				</div>
-				Output image size: <input type="number" id="res" min="0" value="640" onchange="inputChange()" onkeyup="inputChange()"/>
-			</td>
 			<td class="main">
 				<canvas id="overview" class="output overview" width="320" height="480">
 				</canvas>
@@ -108,6 +94,27 @@
 						<td class="input"><input type="number" id="w" value="0.2" onchange="inputChange()"/> mm</td>
 					</tr>
 				</table>
+			</td>
+			<td class="main">
+				<canvas id="output" class="output main" width="640" height="640">
+					This harmonograph simulator uses the HTML5 canvas element. You need a recent browser to view it, for example, <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a>, <a href="http://www.google.com/chrome">Google Chrome</a> or <a href="http://www.opera.com/">Opera</a>.
+				</canvas>
+				<div class="right">
+					<p>
+						Output image size (pixels):
+						<input type="number" id="res" min="0" value="640" onchange="inputChange()" onkeyup="inputChange()"/>
+					</p>
+					<p>
+						<button type="button" onclick="event.preventDefault(); savePng();">Save PNG</button>
+						<button type="button" onclick="event.preventDefault(); saveSvg();">Save SVG</button>
+					</p>
+					<p>
+						<a id="permalink" href="#">Link to this creation</a>
+					</p>
+				</div>
+				<button type="button" id="startstop" onclick="event.preventDefault(); start();">Start</button>
+				<button type="button" id="reset" onclick="event.preventDefault(); stop(); clear();">Reset</button><br><br>
+				Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
 			</td>
 		</tr>
 	</table>

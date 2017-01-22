@@ -36,11 +36,6 @@ p {
 	border: 2px solid #ffa;
 }
 
-.output.main {
-	width: 640px;
-	height: 640px;
-}
-
 .output.main,
 .output.overview {
 	display: block;
