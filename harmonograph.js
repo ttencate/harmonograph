@@ -3,8 +3,8 @@
 var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s;
 
 var t = 0.0, dt = 0.01;
-var points = [];
 var x, y;
+var xs, ys;
 var alpha, beta, gamma;
 
 var output;
@@ -52,17 +52,13 @@ CanvasRenderer.prototype.clear = function() {
 	}
 };
 
-CanvasRenderer.prototype.draw = function(points) {
+CanvasRenderer.prototype.draw = function(xs, ys) {
 	var context = this.context;
-	var ix = 0;
-	var iy = 1;
 	context.beginPath();
-	context.moveTo(points[ix], points[iy]);
-	var n = points.length;
-	while (ix < n) {
-		context.lineTo(points[ix], points[iy]);
-		ix += 2;
-		iy += 2;
+	context.moveTo(xs[0], ys[0]);
+	var n = xs.length;
+	for (var i = 1; i < n; i++) {
+		context.lineTo(xs[i], ys[i]);
 	}
 	context.stroke();
 };
@@ -95,18 +91,18 @@ SvgRenderer.prototype.clear = function() {
 	}
 };
 
-SvgRenderer.prototype.draw = function(points) {
+SvgRenderer.prototype.draw = function(xs, ys) {
 	var data = [this.path.getAttribute('d'), 'M'];
 	var i = 0;
-	data.push(points[i++]);
-	data.push(points[i++]);
-	var n = points.length;
-	if (n > 2) {
+	data.push(xs[0]);
+	data.push(ys[0]);
+	var n = xs.length;
+	if (n > 1) {
 		data.push('L');
 	}
-	while (i < n) {
-		data.push(points[i++]);
-		data.push(points[i++]);
+	for (var i = 1; i < n; i++) {
+		data.push(xs[i]);
+		data.push(ys[i]);
 	}
 	this.path.setAttribute('d', data.join(' '));
 };
@@ -132,7 +128,8 @@ function init() {
 function clear() {
 	t = 0.0;
 	updateXY();
-	points = [x, y];
+	xs = [x];
+	ys = [y];
 
 	output.clear();
 	drawOverview(true);
@@ -160,17 +157,18 @@ function stop() {
 }
 
 function step() {
-	var newPoints = [points[points.length - 2], points[points.length - 1]];
+	var newXs = [xs[xs.length - 1]];
+	var newYs = [ys[ys.length - 1]];
 	for (var i = 0; i < s; ++i) {
 		t += dt;
 		updateXY();
-		points.push(x);
-		points.push(y);
-		newPoints.push(x);
-		newPoints.push(y);
+		xs.push(x);
+		ys.push(y);
+		newXs.push(x);
+		newYs.push(y);
 	}
 	
-	output.draw(newPoints);
+	output.draw(newXs, newYs);
 	drawOverview(false);
 }
 
@@ -354,7 +352,7 @@ function savePng() {
 	png.width = 4096;
 	png.height = 4096;
 	var renderer = new CanvasRenderer(png, 1, 1, false);
-	renderer.draw(points);
+	renderer.draw(xs, ys);
 	renderer.save();
 }
 
@@ -366,7 +364,7 @@ function saveSvg() {
 	svg.setAttribute('height', 640);
 	svg.setAttribute('version', '1.1');
 	var renderer = new SvgRenderer(svg, 1, 1);
-	renderer.draw(points);
+	renderer.draw(xs, ys);
 	renderer.save();
 }
 
