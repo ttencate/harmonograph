@@ -1,3 +1,5 @@
+'use strict';
+
 var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s;
 
 var x = 0.0;
@@ -102,7 +104,7 @@ function sChange() {
 function enableInput(enabled) {
 	var form = document.getElementById('input');
 	var inputs = form.getElementsByTagName('input');
-	for (var i in inputs) {
+	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		input.disabled = !enabled;
 	}
