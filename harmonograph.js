@@ -1,6 +1,6 @@
 'use strict';
 
-var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s, res;
+var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s, w, res;
 
 var t = 0.0, dt = 0.01;
 var x, y;
@@ -13,11 +13,9 @@ var startStop, permalink;
 
 var intervalId = null;
 
-function CanvasRenderer(canvas, lineWidth, lineOpacity, drawCircle) {
+function CanvasRenderer(canvas, drawCircle) {
 	this.canvas = canvas;
 	this.context = canvas.getContext('2d');
-	this.lineWidth = lineWidth;
-	this.lineOpacity = lineOpacity;
 	this.drawCircle = drawCircle;
 
 	this.clear();
@@ -31,14 +29,13 @@ CanvasRenderer.prototype.clear = function() {
 	context.setTransform(1, 0, 0, 1, 0, 0);
 	context.clearRect(0, 0, width, height);
 	context.strokeStyle = '#000';
+	context.lineWidth = w;
 	context.lineCap = 'round';
 	context.lineJoin = 'round';
-	context.globalAlpha = this.lineOpacity;
 	
 	if (r) {
 		var scale = Math.min(width * 0.9 / 2.0 / r, height * 0.9 / 2.0 / r);
 		context.setTransform(scale, 0, 0, scale, width / 2.0, height / 2.0);
-		context.lineWidth = this.lineWidth / scale;
 		
 		if (this.drawCircle) {
 			context.save();
@@ -75,7 +72,7 @@ function SvgRenderer(svg, drawSegments, drawBezier) {
 	this.segments = '';
 	if (drawSegments) {
 		svg.innerHTML += '<path id="segments" stroke="#f00" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
-	this.segments = this.svg.querySelector('#segments');
+		this.segments = this.svg.querySelector('#segments');
 	}
 
 	this.bezier = '';
@@ -91,16 +88,18 @@ SvgRenderer.prototype.clear = function() {
 	var svg = this.svg;
 	if (this.segments) {
 		this.segments.setAttribute('d', '');
+		this.segments.setAttribute('stroke-width', w);
 	}
 	if (this.bezier) {
 		this.bezier.setAttribute('d', '');
+		this.bezier.setAttribute('stroke-width', w);
 	}
 
 	if (r) {
-		var w = svg.width.baseVal.value;
-		var h = svg.height.baseVal.value;
-		var scale = Math.min(w * 0.9 / 2.0 / r, h * 0.9 / 2.0 / r);
-		var m = svg.createSVGMatrix().translate(w / 2.0, h / 2.0).scale(scale);
+		var width = svg.width.baseVal.value;
+		var height = svg.height.baseVal.value;
+		var scale = Math.min(width * 0.9 / 2.0 / r, height * 0.9 / 2.0 / r);
+		var m = svg.createSVGMatrix().translate(width / 2.0, height / 2.0).scale(scale);
 		var transform = svg.createSVGTransformFromMatrix(m);
 		if (this.segments) {
 			this.segments.transform.baseVal.initialize(transform);
@@ -187,7 +186,7 @@ SvgRenderer.prototype.save = function() {
 function init() {
 	startStop = document.getElementById('startstop');
 	permalink = document.getElementById('permalink');
-	output = new CanvasRenderer(document.getElementById('output'), 0.2, 1, true);
+	output = new CanvasRenderer(document.getElementById('output'), true);
 	overview = document.getElementById('overview');
 	overc = overview.getContext('2d');
 
@@ -310,6 +309,7 @@ function readInput() {
 	g = read('g');
 	h = read('h');
 	s = read('s');
+	w = read('w');
 
 	res = read('res');
 	output.canvas.width = res;
@@ -428,7 +428,7 @@ function savePng() {
 	var png = document.createElement('canvas');
 	png.width = res;
 	png.height = res;
-	var renderer = new CanvasRenderer(png, 1, 1, false);
+	var renderer = new CanvasRenderer(png, false);
 	renderer.draw(xs, ys);
 	renderer.save();
 }
