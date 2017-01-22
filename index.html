@@ -4,12 +4,15 @@
 <head>
 	<title>Harmonograph in JavaScript</title>
 	<link rel="stylesheet" type="text/css" href="harmonograph.css"/>
+	<script type="text/javascript" src="FileSaver.js"></script>
 	<script type="text/javascript" src="harmonograph.js"></script>
 </head>
 
 <body onload="init()">
 	<p class="right">
 		<a href="https://github.com/ttencate/harmonograph">Source code</a> |
+		<a onclick="event.preventDefault(); savePng();" href="#">Save PNG (4096&times;4069)</a> |
+		<a onclick="event.preventDefault(); saveSvg();" href="#">Save SVG</a>
 		<a id="permalink" href="#">Link to this creation</a>
 	</p>
 	<h1>Harmonograph in JavaScript</h1>
@@ -21,31 +24,12 @@
 				</canvas>
 				<div class="right">
 					<form id="control">
-						<button type="button" id="reset" onclick="stop(); return initial()">Reset</button>
-						<button type="button" id="startstop" onclick="return start()">Start</button>
+						<button type="button" id="reset" onclick="event.preventDefault(); stop(); clear();">Reset</button>
+						<button type="button" id="startstop" onclick="event.preventDefault(); start();">Start</button>
 						<br><br>
 						Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
 					</form>
 				</div>
-				High resolution output (4096&times;4096 pixels):
-				<table>
-					<tr>
-						<td>
-							<canvas id="png" class="output thumbnail" width="4096" height="4096"></canvas>
-						</td>
-						<td>
-							<svg xmlns="http://www.w3.org/2000/svg" id="svg" class="output thumbnail" width="4096" height="4096">
-								<g id="svgTransform">
-									<path id="svgPath" stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-								</g>
-							</svg>
-						</td>
-					</tr>
-					<tr>
-						<th>PNG</th>
-						<th>SVG</th>
-					</tr>
-				</table>
 			</td>
 			<td class="main">
 				<canvas id="overview" class="output overview" width="320" height="480">

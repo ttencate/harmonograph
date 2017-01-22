@@ -27,6 +27,10 @@ p {
 	margin-right: 20px;
 }
 
+.center {
+	text-align: center;
+}
+
 .output {
 	background-color: #fff;
 	border: 2px solid #ffa;
@@ -41,7 +45,6 @@ p {
 .output.thumbnail {
 	width: 64px;
 	height: 64px;
-	vertical-align: middle;
 }
 
 table {

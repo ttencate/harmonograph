@@ -2,85 +2,136 @@
 
 var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s;
 
-var x = 0.0;
-var y = 0.0;
 var t = 0.0, dt = 0.01;
+var points = [];
+var x, y;
 var alpha, beta, gamma;
 
-var output, outc;
-var png, pngc;
-var svg, svgTransform, svgPath;
+var output;
 var overview, overc;
 var startStop, permalink;
 
 var intervalId = null;
 
-function init() {
-	startStop = document.getElementById('startstop');
-	permalink = document.getElementById('permalink');
-	output = document.getElementById('output');
-	outc = output.getContext('2d');
-	png = document.getElementById('png');
-	pngc = png.getContext('2d');
-	svg = document.getElementById('svg');
-	svgTransform = document.getElementById('svgTransform');
-	svgPath = document.getElementById('svgPath');
-	overview = document.getElementById('overview');
-	overc = overview.getContext('2d');
-
-	fromPermalink();
-	readInput();
-	toPermalink();
-	initial();
+function CanvasRenderer(canvas, lineWidth, lineOpacity, drawCircle) {
+	this.canvas = canvas;
+	this.width = canvas.width;
+	this.height = canvas.height;
+	this.context = canvas.getContext('2d');
+	this.lineWidth = lineWidth;
+	this.lineOpacity = lineOpacity;
+	this.drawCircle = drawCircle;
 }
 
-function initialCanvas(canvas, context, drawCircle) {
+CanvasRenderer.prototype.clear = function() {
+	var context = this.context;
+	var width = this.width;
+	var height = this.height;
+
 	context.setTransform(1, 0, 0, 1, 0, 0);
-	context.clearRect(0, 0, canvas.width, canvas.height);
+	context.clearRect(0, 0, width, height);
 	context.strokeStyle = '#000';
 	context.lineCap = 'round';
 	context.lineJoin = 'round';
+	context.globalAlpha = this.lineOpacity;
 	
 	if (r) {
-		var scale = Math.min(canvas.width * 0.9 / 2.0 / r, canvas.height * 0.9 / 2.0 / r);
-		context.setTransform(scale, 0, 0, scale, canvas.width / 2.0, canvas.height / 2.0);
+		var scale = Math.min(width * 0.9 / 2.0 / r, height * 0.9 / 2.0 / r);
+		context.setTransform(scale, 0, 0, scale, width / 2.0, height / 2.0);
+		context.lineWidth = this.lineWidth / scale;
 		
-		if (drawCircle) {
+		if (this.drawCircle) {
 			context.save();
-			context.strokeStyle = '#eee';
-			context.globalAlpha = 1.0;
 			context.beginPath();
 			context.arc(0, 0, r, 0, 2.0 * Math.PI, false);
 			context.stroke();
 			context.restore();
 		}
 	}
+};
+
+CanvasRenderer.prototype.draw = function(points) {
+	var context = this.context;
+	var ix = 0;
+	var iy = 1;
+	context.beginPath();
+	context.moveTo(points[ix], points[iy]);
+	var n = points.length;
+	while (ix < n) {
+		context.lineTo(points[ix], points[iy]);
+		ix += 2;
+		iy += 2;
+	}
+	context.stroke();
+};
+
+CanvasRenderer.prototype.save = function() {
+	this.canvas.toBlob(function(blob) {
+		saveAs(blob, 'harmonograph.png');
+	}, 'image/png');
+};
+
+function SvgRenderer(svg, lineWidth, lineOpacity) {
+	this.svg = svg;
+	this.path = null;
 }
 
-function initialSvg(svg, transform, path) {
+SvgRenderer.prototype.clear = function() {
+	var svg = this.svg;
+
+	svg.innerHTML = '<path stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
+	this.path = this.svg.querySelector('path');
+
 	if (r) {
 		var w = svg.width.baseVal.value;
 		var h = svg.height.baseVal.value;
 		var scale = Math.min(w * 0.9 / 2.0 / r, h * 0.9 / 2.0 / r);
 		var m = svg.createSVGMatrix().translate(w / 2.0, h / 2.0).scale(scale);
-		transform.transform.baseVal.initialize(svg.createSVGTransformFromMatrix(m));
+		this.path.transform.baseVal.initialize(svg.createSVGTransformFromMatrix(m));
 	}
+};
 
-	path.setAttribute('d', 'M ' + x + ' ' + y);
+SvgRenderer.prototype.draw = function(points) {
+	var data = [this.path.getAttribute('d'), 'M'];
+	var i = 0;
+	data.push(points[i++]);
+	data.push(points[i++]);
+	var n = points.length;
+	if (n > 2) {
+		data.push('L');
+	}
+	while (i < n) {
+		data.push(points[i++]);
+		data.push(points[i++]);
+	}
+	this.path.setAttribute('d', data.join(' '));
+};
+
+SvgRenderer.prototype.save = function() {
+	var blob = new Blob([svg.outerHTML], {type: 'application/svg+xml'});
+	saveAs(blob, 'harmonograph.svg');
 }
 
-function initial() {
+function init() {
+	startStop = document.getElementById('startstop');
+	permalink = document.getElementById('permalink');
+	output = new CanvasRenderer(document.getElementById('output'), 0.2, 1, true);
+	overview = document.getElementById('overview');
+	overc = overview.getContext('2d');
+
+	fromPermalink();
+	readInput();
+	toPermalink();
+	clear();
+}
+
+function clear() {
 	t = 0.0;
 	updateXY();
+	points = [x, y];
 
-	initialCanvas(output, outc, true);
-	outc.lineWidth = 0.2;
-	initialCanvas(png, pngc, false);
-	initialSvg(svg, svgTransform, svgPath);
-	
+	output.clear();
 	drawOverview(true);
-
-	return false;
 }
 
 function start() {
@@ -91,7 +142,6 @@ function start() {
 		startStop.onclick = stop;
 		enableInput(false);
 	}
-	return false;
 }
 
 function stop() {
@@ -103,45 +153,26 @@ function stop() {
 		startStop.onclick = start;
 		enableInput(true);
 	}
-	return false;
-}
-
-function drawSegment(x0, y0, x1, y1) {
-	outc.beginPath();
-	outc.moveTo(x0, y0);
-	outc.lineTo(x1, y1);
-	outc.stroke();
-
-	pngc.beginPath();
-	pngc.moveTo(x0, y0);
-	pngc.lineTo(x1, y1);
-	pngc.stroke();
-
-	var pathData = svgPath.getAttribute('d');
-	if (pathData.indexOf('L') < 0) {
-		pathData += ' L';
-	}
-	pathData += ' ' + x1 + ' ' + y1;
-	svgPath.setAttribute('d', pathData);
 }
 
 function step() {
-	var prevX = x;
-	var prevY = y;
+	var newPoints = [points[points.length - 2], points[points.length - 1]];
 	for (var i = 0; i < s; ++i) {
 		t += dt;
 		updateXY();
-		drawSegment(prevX, prevY, x, y);
-		prevX = x;
-		prevY = y;
+		points.push(x);
+		points.push(y);
+		newPoints.push(x);
+		newPoints.push(y);
 	}
 	
+	output.draw(newPoints);
 	drawOverview(false);
 }
 
 function inputChange() {
 	readInput();
-	initial();
+	clear();
 	drawOverview(true);
 	toPermalink();
 }
@@ -208,7 +239,7 @@ function readInput() {
 
 function drawOverview(variables) {
 	overc.setTransform(1, 0, 0, 1, 0, 0);
-	overc.clearRect(0, 0, output.width, output.height);
+	overc.clearRect(0, 0, overview.width, overview.height);
 	
 	var scale = overview.width * 0.6 / d;
 	overc.setTransform(scale, 0, 0, scale, overview.width * 0.2, overview.width * 0.2);
