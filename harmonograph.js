@@ -1,6 +1,6 @@
 'use strict';
 
-var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s;
+var d, c, p, q, r, A, B, u, v, R, S, f, g, h, s, res;
 
 var t = 0.0, dt = 0.01;
 var x, y;
@@ -15,8 +15,6 @@ var intervalId = null;
 
 function CanvasRenderer(canvas, lineWidth, lineOpacity, drawCircle) {
 	this.canvas = canvas;
-	this.width = canvas.width;
-	this.height = canvas.height;
 	this.context = canvas.getContext('2d');
 	this.lineWidth = lineWidth;
 	this.lineOpacity = lineOpacity;
@@ -27,8 +25,8 @@ function CanvasRenderer(canvas, lineWidth, lineOpacity, drawCircle) {
 
 CanvasRenderer.prototype.clear = function() {
 	var context = this.context;
-	var width = this.width;
-	var height = this.height;
+	var width = this.canvas.width;
+	var height = this.canvas.height;
 
 	context.setTransform(1, 0, 0, 1, 0, 0);
 	context.clearRect(0, 0, width, height);
@@ -264,6 +262,7 @@ function enableInput(enabled) {
 		var input = inputs[i];
 		input.disabled = !enabled;
 	}
+	document.getElementById('res').disabled = !enabled;
 }
 
 function updateXY() {
@@ -311,6 +310,10 @@ function readInput() {
 	g = read('g');
 	h = read('h');
 	s = read('s');
+
+	res = read('res');
+	output.canvas.width = res;
+	output.canvas.height = res;
 }
 
 function drawOverview(variables) {
@@ -423,8 +426,8 @@ function drawOverview(variables) {
 
 function savePng() {
 	var png = document.createElement('canvas');
-	png.width = 4096;
-	png.height = 4096;
+	png.width = res;
+	png.height = res;
 	var renderer = new CanvasRenderer(png, 1, 1, false);
 	renderer.draw(xs, ys);
 	renderer.save();
@@ -434,8 +437,8 @@ function saveSvg() {
 	var ns = 'http://www.w3.org/2000/svg';
 	var svg = document.createElementNS(ns, 'svg');
 	svg.setAttribute('xmlns', ns);
-	svg.setAttribute('width', 640);
-	svg.setAttribute('height', 640);
+	svg.setAttribute('width', res);
+	svg.setAttribute('height', res);
 	svg.setAttribute('version', '1.1');
 	var renderer = new SvgRenderer(svg, false, true);
 	renderer.draw(xs, ys);

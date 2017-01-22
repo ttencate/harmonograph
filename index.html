@@ -11,7 +11,7 @@
 <body onload="init()">
 	<p class="right">
 		<a href="https://github.com/ttencate/harmonograph">Source code</a> |
-		<a onclick="event.preventDefault(); savePng();" href="#">Save PNG (4096&times;4069)</a> |
+		<a onclick="event.preventDefault(); savePng();" href="#">Save PNG</a> |
 		<a onclick="event.preventDefault(); saveSvg();" href="#">Save SVG</a> |
 		<a id="permalink" href="#">Link to this creation</a>
 	</p>
@@ -24,9 +24,10 @@
 				</canvas>
 				<div class="right">
 					<button type="button" id="reset" onclick="event.preventDefault(); stop(); clear();">Reset</button>
-					<button type="button" id="startstop" onclick="event.preventDefault(); start();">Start</button>
+					<button type="button" id="startstop" onclick="event.preventDefault(); start();">Start</button><br><br>
+					Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
 				</div>
-				Time speedup factor: <input type="number" id="s" min="1" step="1" value="1" onchange="sChange()" onkeyup="sChange()"/>
+				Output image size: <input type="number" id="res" min="0" value="640" onchange="inputChange()" onkeyup="inputChange()"/>
 			</td>
 			<td class="main">
 				<canvas id="overview" class="output overview" width="320" height="480">
