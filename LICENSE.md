@@ -1,6 +1,6 @@
-# The MIT License
+# MIT License
 
-Copyright 2010, Thomas ten Cate
+Copyright (c) 2010, Thomas ten Cate
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
