@@ -227,6 +227,11 @@ function stop() {
 	}
 }
 
+function reset() {
+	stop();
+	clear();
+}
+
 function step() {
 	var newXs = [xs[xs.length - 1]];
 	var newYs = [ys[ys.length - 1]];
