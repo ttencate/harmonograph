@@ -30,11 +30,11 @@ canvas {
 }
 
 table.input td {
-	vertical-align: bottom;
+	vertical-align: baseline;
 }
 
 input {
-	width: 5em;
+	width: 6em;
 	text-align: right;
 	font-family: monospace;
 }
