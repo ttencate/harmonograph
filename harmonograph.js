@@ -165,7 +165,7 @@ function drawOverview(variables) {
 	overc.lineWidth = 5;
 	overc.strokeStyle = '#000';
 	overc.fillStyle = '#000';
-	overc.font = '80px sans-serif';
+	overc.font = 'italic 80px sans-serif';
 	overc.textBaseline = 'bottom';
 
 	// top bar
