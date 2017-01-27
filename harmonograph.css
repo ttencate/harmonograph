@@ -55,18 +55,18 @@ table.input td {
 	vertical-align: baseline;
 }
 
-input {
-	width: 6em;
-	text-align: right;
-	font-family: monospace;
-}
-
 input.error {
 	background-color: #fdd;
 }
 
 td.desc {
 	font-size: 70%;
+}
+
+td.input input {
+	width: 6em;
+	text-align: right;
+	font-family: monospace;
 }
 
 button {

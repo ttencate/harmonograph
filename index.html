@@ -2,6 +2,7 @@
 <html>
 
 <head>
+	<meta charset="UTF-8">
 	<title>Harmonograph in JavaScript</title>
 	<link rel="stylesheet" type="text/css" href="harmonograph.css"/>
 	<script type="text/javascript" src="FileSaver.js"></script>
@@ -102,18 +103,30 @@
 					This harmonograph simulator uses the HTML5 canvas element. You need a recent browser to view it, for example, <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a>, <a href="http://www.google.com/chrome">Google Chrome</a> or <a href="http://www.opera.com/">Opera</a>.
 				</canvas>
 				<div class="right">
-					<p>
-						Output image size (pixels):
-						<input type="number" id="res" min="0" value="640"/>
-					</p>
-					<p>
-						Bézier curve step size:
-						<input type="number" id="step" min="1" value="32"/>
-					</p>
-					<p>
-						<button type="button" onclick="event.preventDefault(); savePng();">Save PNG</button>
-						<button type="button" onclick="event.preventDefault(); saveSvg();">Save SVG</button>
-					</p>
+					<table class="input">
+						<tr>
+							<td class="desc">Output image size:</td>
+							<td class="input"><input type="number" id="res" min="0" value="640"/> pixels</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<button type="button" onclick="event.preventDefault(); savePng();">Save PNG</button>
+							</td>
+						</tr>
+						<tr>
+							<td class="desc">Use Bézier curves</td>
+							<td class="input"><input type="checkbox" id="bezier" checked/></td>
+						</tr>
+						<tr>
+							<td class="desc">Use single cubic curve for</td>
+							<td class="input"><input type="number" id="bezier-step" min="1" value="32"/> segments</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<button type="button" onclick="event.preventDefault(); saveSvg();">Save SVG</button>
+							</td>
+						</tr>
+					</table>
 					<p>
 						<a id="permalink" href="#">Link to this creation</a>
 					</p>

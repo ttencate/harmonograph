@@ -64,14 +64,14 @@ CanvasRenderer.prototype.save = function() {
 	}, 'image/png');
 };
 
-function SvgRenderer(svg, drawSegments, drawBezier) {
+function SvgRenderer(svg, drawSegments, drawBezier, bezierStep) {
 	this.svg = svg;
 	this.path = null;
 	svg.innerHTML = '';
 
 	this.segments = '';
 	if (drawSegments) {
-		svg.innerHTML += '<path id="segments" stroke="#f00" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
+		svg.innerHTML += '<path id="segments" stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
 		this.segments = this.svg.querySelector('#segments');
 	}
 
@@ -80,6 +80,8 @@ function SvgRenderer(svg, drawSegments, drawBezier) {
 		svg.innerHTML += '<path id="bezier" stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none" d=""></path>';
 		this.bezier = this.svg.querySelector('#bezier');
 	}
+
+	this.bezierStep = bezierStep || 1;
 
 	this.clear();
 }
@@ -141,7 +143,7 @@ SvgRenderer.prototype.drawSegments = function(path, xs, ys) {
 
 SvgRenderer.prototype.drawBezier = function(path, xs, ys) {
 	var n = xs.length;
-	var step = Math.min(read('step'), n - 1);
+	var step = Math.min(this.bezierStep, n - 1);
 	var factor = 0.5 * step / 3;
 	var rxs = [];
 	var rys = [];
@@ -442,7 +444,8 @@ function saveSvg() {
 	svg.setAttribute('width', res);
 	svg.setAttribute('height', res);
 	svg.setAttribute('version', '1.1');
-	var renderer = new SvgRenderer(svg, false, true);
+	var bezier = document.getElementById('bezier').checked;
+	var renderer = new SvgRenderer(svg, !bezier, bezier, read('bezier-step'));
 	renderer.draw(xs, ys);
 	renderer.save();
 }
