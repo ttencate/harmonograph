@@ -141,7 +141,7 @@ SvgRenderer.prototype.drawSegments = function(path, xs, ys) {
 
 SvgRenderer.prototype.drawBezier = function(path, xs, ys) {
 	var n = xs.length;
-	var step = Math.min(32, n - 1);
+	var step = Math.min(read('step'), n - 1);
 	var factor = 0.5 * step / 3;
 	var rxs = [];
 	var rys = [];
